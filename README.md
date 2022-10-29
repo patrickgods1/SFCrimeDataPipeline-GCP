@@ -47,35 +47,35 @@ These instructions will get you a copy of the project up and running for develop
 #### GCP Setup
 1. Create a [Google Cloud project](https://console.cloud.google.com/projectcreate) in Google Cloud console.
 2. Turn on APIs for the service account:
-  * BigQuery API
-  * BigQuery Migration API
-  * BigQuery Storage API
-  * Cloud Build API
-  * Cloud Datastore API
-  * Cloud Debugger API
-  * Cloud Functions API
-  * Cloud Logging API
-  * Cloud Monitoring API
-  * Cloud Pub/Sub API
-  * Cloud Scheduler API
-  * Cloud SQL
-  * Cloud Storage
-  * Cloud Storage API
-  * Cloud Trace API
-  * Container Registry API
-  * Google Cloud APIs
-  * Google Cloud Storage JSON API
-  * Legacy Cloud Source Repositories API
-  * Service Management API
-  * Service Usage API
-3. In Identity and Access Management (IAM), create a service account
-  * BigQuery Admin
-  * Cloud Functions Admin
-  * Cloud Scheduler Admin
-  * Service Account User
-  * Storage Admin
-  * Storage Object Admin
-  * Viewer
+   * BigQuery API
+   * BigQuery Migration API
+   * BigQuery Storage API
+   * Cloud Build API
+   * Cloud Datastore API
+   * Cloud Debugger API
+   * Cloud Functions API
+   * Cloud Logging API
+   * Cloud Monitoring API
+   * Cloud Pub/Sub API
+   * Cloud Scheduler API
+   * Cloud SQL
+   * Cloud Storage
+   * Cloud Storage API
+   * Cloud Trace API
+   * Container Registry API
+   * Google Cloud APIs
+   * Google Cloud Storage JSON API
+   * Legacy Cloud Source Repositories API
+   * Service Management API
+   * Service Usage API
+3. In Identity and Access Management (IAM), create a service account with these permissions:
+   * BigQuery Admin
+   * Cloud Functions Admin
+   * Cloud Scheduler Admin
+   * Service Account User
+   * Storage Admin
+   * Storage Object Admin
+   * Viewer
 4. Download the service account keys JSON file to the parent directory of the project on the local development machine.
 
 #### terraform.tfvars File
