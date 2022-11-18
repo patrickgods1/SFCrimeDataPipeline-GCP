@@ -1,10 +1,15 @@
+"""
+ELT script to extract SF crime data and load into GCS.
+"""
+from typing import Tuple
+
 import pandas as pd
 import pyarrow as pa
 import requests
 from google.cloud import bigquery, storage
 
 
-def fetchDataToGCS(url, filename, bucket_name):
+def fetchDataToGCS(url: str, filename: str, bucket_name: str) -> None:
     """
     Use the Python requests library to download the data in CSV format and
     saved in the raw bucket in GCS.
@@ -23,7 +28,7 @@ def fetchDataToGCS(url, filename, bucket_name):
     blob.delete()
 
 
-def csvToParquet(filename, bucket_name):
+def csvToParquet(filename: str, bucket_name: str) -> None:
     """
     Use the Python pandas library to read the CSV formatted data and save as a
     parquet file in the parquet bucket in GCS.
@@ -120,7 +125,7 @@ def csvToParquet(filename, bucket_name):
     )
 
 
-def createExternalTable(filename, bucket_name):
+def createExternalTable(filename: str, bucket_name: str) -> None:
     client = bigquery.Client()
     table_id = f"sf-crime-data-pipeline.sf_crime_data_dataset.{filename}"
     job_config = bigquery.LoadJobConfig(
@@ -137,7 +142,7 @@ def createExternalTable(filename, bucket_name):
     # load_job.result()  # Waits for the job to complete.
 
 
-def main(request):
+def main(request: str) -> Tuple[str, int]:
     url = "https://data.sfgov.org/api/views/wg3w-h783/rows.csv?accessType=DOWNLOAD&bom=false&format=false&delimiter=%7C"  # noqa: E501
     filename = "SFCrimeData2018toPresent"
     bucket_name = "sf_crime_data_lake_sf-crime-data-pipeline"
