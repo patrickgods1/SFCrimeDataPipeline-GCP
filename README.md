@@ -6,6 +6,8 @@ The City of San Francisco provides a daily updated report with incidents filed w
     * [Data Pipeline Diagram](#data-pipeline-diagram)
     * [Dimensional Model](#dimensional-model)
   * [Dashboard](#dashboard)
+    * [Tableau Public](#dashboard)
+    * [Looker Studio](#dashboard)
   * [Development](#development)
     * [Built With](#built-with)
     * [Setup](#setup)
@@ -25,8 +27,8 @@ The City of San Francisco provides a daily updated report with incidents filed w
 ![SFCrimeDimensionalModel](https://user-images.githubusercontent.com/60832092/198851851-318ad2c6-3342-435b-aadf-f15abb5b53fc.png)
 
 ## Dashboard
-Tableau Public [dashboard](https://public.tableau.com/app/profile/pat3330/viz/SFCrimeData_16407224575150/Story?publish=yes)
-Looker Studio [dashboard](https://lookerstudio.google.com/reporting/0736c16b-27d7-4730-a989-1b753350d539)
+* [Tableau Public](https://public.tableau.com/app/profile/pat3330/viz/SFCrimeData_16407224575150/Story?publish=yes)
+* [Looker Studio](https://lookerstudio.google.com/reporting/0736c16b-27d7-4730-a989-1b753350d539)
 
 
 ## Development
