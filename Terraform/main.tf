@@ -1,17 +1,17 @@
 terraform {
   required_version = ">= 1.0"
-  backend "local" {}  # Can change from "local" to "gcs" (for google) or "s3" (for aws), if you would like to preserve your tf-state online
+  backend "local" {} # Can change from "local" to "gcs" (for google) or "s3" (for aws), if you would like to preserve your tf-state online
   required_providers {
     google = {
-      source  = "hashicorp/google"
+      source = "hashicorp/google"
     }
   }
 }
 
 provider "google" {
-  project = var.project
-  region = var.region
-  credentials = file(var.credentials)  # Use this if you do not want to set env-var GOOGLE_APPLICATION_CREDENTIALS
+  project     = var.project
+  region      = var.region
+  credentials = file(var.credentials) # Use this if you do not want to set env-var GOOGLE_APPLICATION_CREDENTIALS
 }
 
 # Data Lake Bucket
@@ -22,22 +22,28 @@ resource "google_storage_bucket" "data-lake-bucket" {
   force_destroy = true
 
   # Optional, but recommended settings:
-  storage_class = var.storage_class
+  storage_class               = var.storage_class
   uniform_bucket_level_access = true
 
   versioning {
-    enabled     = true
+    enabled = false
   }
 
-  lifecycle_rule {
-    action {
-      type = "Delete"
-    }
-    condition {
-      age = 30  // days
-    }
+  # lifecycle_rule {
+  #   action {
+  #     type = "Delete"
+  #   }
+  #   condition {
+  #     num_newer_versions = 1
+  #   }
+  # }
+
+  soft_delete_policy {
+    retention_duration_seconds = 0
   }
+
 }
+
 
 resource "google_storage_bucket_object" "dim_date" {
   name   = "dim_date.parquet"
@@ -54,10 +60,12 @@ resource "google_storage_bucket_object" "dim_time" {
 # DWH
 # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/bigquery_dataset
 resource "google_bigquery_dataset" "dataset" {
-  dataset_id = var.BQ_DATASET
-  project    = var.project
+  dataset_id  = var.BQ_DATASET
+  project     = var.project
   description = "San Francisco crime dataset"
-  location   = var.region
+  location    = var.region
+
+  delete_contents_on_destroy = true
 
   labels = {
     env = "default"
@@ -82,8 +90,8 @@ resource "google_bigquery_dataset" "dataset" {
 # ETL - Google Cloud Functions
 # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloudfunctions_function
 locals {
-  timestamp = formatdate("YYMMDDhhmmss", timestamp())
-	root_dir = abspath("../")
+  timestamp       = formatdate("YYMMDDhhmmss", timestamp())
+  root_dir        = abspath("../")
   service_account = jsondecode(file(var.credentials)).client_email
 }
 
@@ -97,6 +105,17 @@ data "archive_file" "source" {
 resource "google_storage_bucket" "source-bucket" {
   name     = "sf-crime-data-pipeline-source-bucket"
   location = var.region
+
+  force_destroy = true
+
+  versioning {
+    enabled = false
+  }
+
+  soft_delete_policy {
+    retention_duration_seconds = 0
+  }
+
 }
 
 # Add source code zip to bucket
@@ -110,15 +129,15 @@ resource "google_storage_bucket_object" "zip" {
 resource "google_cloudfunctions_function" "function" {
   name        = "SF_crime_pipeline_ELT"
   description = "SF crime data pipeline ELT function"
-  runtime     = "python310"
+  runtime     = "python312"
 
-  available_memory_mb           = 2048
-  source_archive_bucket         = google_storage_bucket.source-bucket.name
-  source_archive_object         = google_storage_bucket_object.zip.name
-  trigger_http                  = true
-  https_trigger_security_level  = "SECURE_ALWAYS"
-  timeout                       = 300
-  entry_point                   = "main"
+  available_memory_mb          = 2048
+  source_archive_bucket        = google_storage_bucket.source-bucket.name
+  source_archive_object        = google_storage_bucket_object.zip.name
+  trigger_http                 = true
+  https_trigger_security_level = "SECURE_ALWAYS"
+  timeout                      = 300
+  entry_point                  = "main"
 }
 
 # IAM entry for all users to invoke the function
@@ -133,8 +152,8 @@ resource "google_cloudfunctions_function_iam_member" "invoker" {
 
 resource "google_cloud_scheduler_job" "job" {
   name             = "Trigger"
-  description      = "Trigger ${google_cloudfunctions_function.function.name} Cloud Function everyday at 7pm."
-  schedule         = "0 20 * * *" # Everyday at 8pm
+  description      = "Trigger ${google_cloudfunctions_function.function.name} Cloud Function on the 1st of each month at 12am Pacific Time."
+  schedule         = "0 0 1 * *" # 1st of the month at 12am
   time_zone        = "America/Los_Angeles"
   attempt_deadline = "320s"
 

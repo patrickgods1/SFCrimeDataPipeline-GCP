@@ -4,6 +4,10 @@ export/
 data/*.csv
 data/SFCrimeData2018toPresent.parquet
 
+# Cache
+.mypy_cache
+.vscode
+
 # Local .terraform directories
 **/.terraform/*
 .terraform.lock.hcl
@@ -33,5 +37,6 @@ test.py
 *.drawio
 *.gs
 *.json
+*.parquet
 *.png
 *.xml

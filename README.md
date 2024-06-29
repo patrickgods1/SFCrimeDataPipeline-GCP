@@ -25,7 +25,9 @@ The City of San Francisco provides a daily updated report with incidents filed w
 ![SFCrimeDimensionalModel](https://user-images.githubusercontent.com/60832092/198851851-318ad2c6-3342-435b-aadf-f15abb5b53fc.png)
 
 ## Dashboard
-Tableau Public [dashboard](https://public.tableau.com/app/profile/pat3330/viz/SFCrimeData_16407224575150/Story?publish=yes).
+Tableau Public [dashboard](https://public.tableau.com/app/profile/pat3330/viz/SFCrimeData_16407224575150/Story?publish=yes)
+Looker Studio [dashboard](https://lookerstudio.google.com/reporting/0736c16b-27d7-4730-a989-1b753350d539)
+
 
 ## Development
 These instructions will get you a copy of the project up and running for development and deployment.
@@ -47,6 +49,7 @@ These instructions will get you a copy of the project up and running for develop
 #### GCP Setup
 1. Create a [Google Cloud project](https://console.cloud.google.com/projectcreate) in Google Cloud console.
 2. Turn on APIs for the service account:
+   * Artifact Registry API
    * BigQuery API
    * BigQuery Migration API
    * BigQuery Storage API
